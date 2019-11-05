@@ -7,7 +7,7 @@ Type=simple
 Restart=always
 RestartSec=5
 User=pi
-ExecStart=/usr/bin/env python3 /home/pi/wifi-auto-connect/wifi-auto-connect.py wlan1
+ExecStart=/usr/bin/env python3 /home/pi/wifi-auto-connect/wifi-auto-connect.py wlan0
 
 [Install]
 WantedBy=multi-user.target

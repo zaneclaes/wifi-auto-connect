@@ -31,6 +31,10 @@ chmod +x /home/pi/wifi-auto-connect/wifi-auto-connect.py
 
 You may omit the `-l DEBUG` parameter if desired (this parameter accepts standard Python `logging` levels).
 
+## Additiontal Options
+
+Blacklist specific SSIDs (separated by commas): `--blacklist network_ssid,other_SSID`
+
 ## Install the Service
 
 First, modify the `wifi-auto-connect.service` file such that the ExecStart command matches the command per the above `Test Run`.

@@ -8,6 +8,7 @@ min_signal_strength = 10 # Minimum signal strength for an open network to connec
 
 security_types = ['WPA1', 'WPA2', '802.1X', '--']
 failed_networks = set()
+blacklist = []
 
 """
 A signal wifi network for a single interface. Each network has a name, signal, and defines security.
@@ -83,11 +84,14 @@ def connect(interface):
     open_networks = [n for n in networks if len(n.security) == 0]
     log.debug(f'found {len(open_networks)} open networks...')
     for network in open_networks:
-        if network.signal <= min_signal_strength:
-            network.log.debug('skipping (weak signal)')
+        if network.ssid in blacklist:
+            network.log.debug('skipping (blacklisted)')
             continue
         if network.ssid in failed_networks:
             network.log.debug('skipping (previously failed)')
+            continue
+        if network.signal <= min_signal_strength:
+            network.log.debug('skipping (weak signal)')
             continue
         if not network.connect():
             failed_networks.add(network.ssid)
@@ -114,12 +118,14 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('interface', default=os.getenv('WIFI_AUTO_CONNECT_INTERFACE', 'wlan0'))
+    parser.add_argument('--blacklist', '-b', default='', required=False)
     parser.add_argument('--log-level', '-l', choices=log_levels, default='INFO', help='logging level')
     parser.add_argument('--log-format', '-f', default='[%(levelname)s] [%(name)s] %(message)s')
     opts = parser.parse_args()
 
     logging.basicConfig(format=opts.log_format, level=opts.log_level)
     log = logging.getLogger(opts.interface)
+    blacklist = [x for x in opts.blacklist.split(',') if len(x) > 0]
 
     cmd = f'ifconfig {opts.interface} | grep \'inet\' || echo ""'
     while True:
