@@ -1,0 +1,13 @@
+[Unit]
+Description=Wifi Auto Connect
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=pi
+ExecStart=/usr/bin/env python3 /home/pi/wifi-auto-connect/wifi-auto-connect.py wlan1
+
+[Install]
+WantedBy=multi-user.target

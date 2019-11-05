@@ -1,0 +1,4 @@
+interface: wlan1
+poll_interval: 30
+min_signal_strength: 10
+passwords: {}
